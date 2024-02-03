@@ -69,10 +69,16 @@ router.post("/updatedb", async (req, res) => {
     if (!team) {
       return res.status(400).json({ error: "Team not found" });
     }
+    let remainingBudget = 90;
     team.players.forEach((player) => {
+      remainingBudget -= player.price;
       if (player.id === id) {
         throw new Error("Player is Sold already");
         // return res.status(400).json({ error: "Player already sold" });
+      }
+      if (remainingBudget < price) {
+        throw new Error("Not enough budget");
+        // return res.status(400).json({ error: "Not enough budget" });
       }
     })
     // team size constraint
