@@ -75,6 +75,10 @@ router.post("/updatedb", async (req, res) => {
         // return res.status(400).json({ error: "Player already sold" });
       }
     })
+    // team size constraint
+    if (team.players.length === 17) {
+      throw new Error("Team is full");
+    }
     // console.log(allPlayers.players);
     allPlayers.players.forEach((player) => {
       if (player.id === id) {
@@ -95,10 +99,15 @@ router.post("/updatedb", async (req, res) => {
 
 router.get("/getdb", async (req, res) => {
   // const team = await Team.findOne({ _id: "65bbcce2a0854b3a03731c0b" });
-  const team = await Team.find();
-  console.log(team);
-  if (!team) {
-    return res.status(400).json({ error: "Team not found" });
+  try {
+
+    const team = await Team.find();
+    console.log(team);
+    if (!team) {
+      return res.status(400).json({ error: "Team not found" });
+    }
+    res.status(200).json(team);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
   }
-  res.status(200).json(team);
 })
